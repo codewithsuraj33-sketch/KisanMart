@@ -10,5 +10,5 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     isAdmin = !!profile?.is_admin
   }
   if (!isAdmin) return <>{children}</>
-  return <div className="min-h-screen bg-slate-50 md:flex"><AdminNav /><main className="min-w-0 flex-1 bg-slate-50">{children}</main></div>
+  return <div className="min-h-screen bg-surface"><AdminNav /><main className="min-w-0">{children}</main></div>
 }

@@ -70,7 +70,7 @@ export default function AdminCustomersTable({ customers }: { customers: AdminCus
       <div className="mb-3 text-xs font-semibold text-muted">Showing {rows.length} of {customers.length} users</div>
       <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-card">
         <table className="w-full min-w-[900px] text-left text-sm">
-          <thead className="border-b border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500"><tr>
+          <thead className="border-b border-line bg-sage text-xs font-bold uppercase tracking-wider text-brand-dark/60"><tr>
             <AdminSortHeader label="Customer" active={sortKey === 'customer'} direction={direction} onSort={() => sortBy('customer')} />
             <AdminSortHeader label="Contact" active={sortKey === 'contact'} direction={direction} onSort={() => sortBy('contact')} />
             <AdminSortHeader label="Orders" active={sortKey === 'orders'} direction={direction} onSort={() => sortBy('orders')} />

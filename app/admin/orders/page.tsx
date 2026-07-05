@@ -12,7 +12,7 @@ export default async function AdminOrdersPage() {
   const list = (orders ?? []) as AdminOrderRow[]
 
   return (
-    <div className="mx-auto w-full max-w-7xl p-5 sm:p-8">
+    <div className="w-full p-5 sm:p-8 lg:px-10">
       <RealtimeRefresh tables={['orders']} />
       <div className="mb-7">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-muted">Fulfilment</p>

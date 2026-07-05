@@ -48,7 +48,7 @@ export default async function AdminUsersPage() {
   const adminCount = customers.filter((customer) => customer.is_admin).length
 
   return (
-    <div className="mx-auto w-full max-w-7xl p-5 sm:p-8">
+    <div className="w-full p-5 sm:p-8 lg:px-10">
       <div className="mb-7">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-muted">Accounts</p>
         <h1 className="mt-2 text-3xl font-extrabold text-ink">Customers</h1>

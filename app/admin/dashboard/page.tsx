@@ -19,7 +19,7 @@ export default async function AdminDashboardPage() {
     { label: 'Customers', value: customerCount ?? 0, icon: Users, top: 'from-violet-500 to-purple-600', iconBg: 'bg-violet-50 text-violet-600' },
   ]
   return (
-    <div className="mx-auto w-full max-w-7xl p-5 sm:p-8">
+    <div className="w-full p-5 sm:p-8 lg:px-10">
       <RealtimeRefresh tables={['products', 'orders']} />
       <div className="mb-7"><p className="text-xs font-bold uppercase tracking-[0.16em] text-muted">Business overview</p><h1 className="mt-2 text-3xl font-extrabold text-ink">Dashboard</h1><p className="mt-1 text-sm text-body">A quick pulse check on your KisanMart store.</p></div>
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">

@@ -72,7 +72,7 @@ export default function AdminOrdersTable({ orders }: { orders: AdminOrderRow[] }
       <div className="mb-3 text-xs font-semibold text-muted">Showing {rows.length} of {orders.length} orders</div>
       <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-card">
         <table className="w-full min-w-[820px] text-left text-sm">
-          <thead className="border-b border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500"><tr>
+          <thead className="border-b border-line bg-sage text-xs font-bold uppercase tracking-wider text-brand-dark/60"><tr>
             <AdminSortHeader label="Order" active={sortKey === 'order'} direction={direction} onSort={() => sortBy('order')} />
             <AdminSortHeader label="Customer" active={sortKey === 'customer'} direction={direction} onSort={() => sortBy('customer')} />
             <AdminSortHeader label="Total" active={sortKey === 'total'} direction={direction} onSort={() => sortBy('total')} />

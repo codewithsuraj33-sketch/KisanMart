@@ -16,7 +16,7 @@ export default async function AdminProductsPage() {
   const list = (products ?? []) as Product[]
 
   return (
-    <div className="mx-auto w-full max-w-7xl p-5 sm:p-8">
+    <div className="w-full p-5 sm:p-8 lg:px-10">
       <RealtimeRefresh tables={['products', 'categories']} />
       <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
         <div>
