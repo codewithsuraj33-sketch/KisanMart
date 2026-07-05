@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+/* ============================================================
+   KisanMart — Design System
+   "Fresh, trustworthy, modern Indian agri brand"
+   Utility names: bg-brand, text-ink, text-body, text-muted,
+   border-line, bg-surface, bg-accent, bg-card ...
+   ============================================================ */
+
+@theme {
+  /* ---- Brand ---- */
+  --color-brand: #16a34a; /* rich forest green (== green-600) */
+  --color-brand-dark: #14532d; /* deep green (== green-900) */
+  --color-brand-light: #bbf7d0; /* mint (== green-200) */
+  --color-accent: #f59e0b; /* warm amber / harvest gold */
+  --color-accent-dark: #d97706;
+
+  /* ---- Surfaces ---- */
+  --color-surface: #f0fdf4; /* barely-there green white */
+  --color-card: #ffffff;
+  --color-ink: #0f172a; /* near-black (text, footer, admin) */
+
+  /* ---- Text ---- */
+  --color-body: #475569; /* slate secondary text */
+  --color-muted: #94a3b8;
+  --color-line: #e2e8f0; /* border */
+
+  /* ---- Status ---- */
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+
+  /* ---- Fonts ---- */
+  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* ---- Shadows (soft, never harsh) ---- */
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.05),
+    0 1px 2px rgba(15, 23, 42, 0.03);
+  --shadow-lift: 0 12px 40px rgba(15, 23, 42, 0.12);
+  --shadow-soft: 0 8px 30px rgba(15, 23, 42, 0.08);
+}
+
+/* ------------------------------------------------------------
+   Base
+   ------------------------------------------------------------ */
+body {
+  background: var(--color-surface);
+  color: var(--color-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Display font for headings */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: var(--font-display);
+  color: var(--color-ink);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #bbf7d0;
+  color: #14532d;
+}
+
+/* ------------------------------------------------------------
+   Reusable utilities
+   ------------------------------------------------------------ */
+
+/* Eyebrow label used above section headings */
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+}
+
+/* Subtle green dot pattern */
+.bg-dots {
+  background-image: radial-gradient(#bbf7d0 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+/* Hide scrollbar but keep scroll (mobile chip rows) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Line clamp helper */
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------
+   Keyframes — subtle, professional (no bounce)
+   ------------------------------------------------------------ */
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.animate-float {
+  animation: float-slow 3s ease-in-out infinite;
+}
+
+@keyframes float-slower {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+.animate-float-slower {
+  animation: float-slower 3.6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e8f0ea;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
