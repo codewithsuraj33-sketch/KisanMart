@@ -50,25 +50,24 @@ function PayBadge({ children }: { children: React.ReactNode }) {
 
 export default function Footer() {
   return (
-    <footer id="about" className="mt-auto border-t-[3px] border-brand bg-ink text-slate-400">
-      <div className="w-full px-4 py-14 sm:px-6 lg:px-10">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+    <footer id="about" className="mt-auto border-t-[3px] border-brand bg-brand-dark text-white/65">
+      <div className="w-full px-4 py-16 sm:px-6 lg:px-10">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
           {/* Brand */}
-          <div>
-            <div className="flex items-center gap-2 font-display text-xl font-extrabold">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-white">
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-white">
                 <Leaf size={20} />
               </span>
-              <span>
-                <span className="text-brand">Kisan</span>
-                <span className="text-accent">Mart</span>
+              <span className="font-display text-2xl font-extrabold text-white">
+                Kisan<span className="text-brand-light">Mart</span>
               </span>
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-slate-400">
-              Empowering Indian farmers with quality-tested seeds, fertilizers and
-              tools — delivered to your doorstep.
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/55">
+              Empowering Indian farmers with honest, quality-tested seeds, fertilizers,
+              crop protection and tools — delivered to your doorstep.
             </p>
-            <div className="mt-5 flex gap-2">
+            <div className="mt-6 flex gap-2">
               {SOCIALS.map((s) => (
                 <a
                   key={s.label}
@@ -76,7 +75,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-slate-300 transition hover:bg-brand hover:text-white"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/80 transition hover:bg-brand hover:text-white"
                 >
                   <s.Icon />
                 </a>
@@ -96,7 +95,25 @@ export default function Footer() {
                 { href: '/wishlist', label: 'Wishlist' },
               ].map((l) => (
                 <li key={l.label}>
-                  <Link href={l.href} className="transition hover:text-brand">{l.label}</Link>
+                  <Link href={l.href} className="transition hover:text-brand-light">{l.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Customer service */}
+          <div>
+            <h3 className="font-display text-sm font-bold uppercase tracking-wider text-white">Customer Service</h3>
+            <ul className="mt-4 space-y-2.5 text-sm">
+              {[
+                { href: '/settings', label: 'My Account' },
+                { href: '/orders', label: 'Order Tracking' },
+                { href: '/wishlist', label: 'Wishlist' },
+                { href: '/cart', label: 'Shopping Cart' },
+                { href: '/#about', label: 'Returns & Refunds' },
+              ].map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href} className="transition hover:text-brand-light">{l.label}</Link>
                 </li>
               ))}
             </ul>
@@ -108,41 +125,36 @@ export default function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm">
               {CATEGORIES.map((c) => (
                 <li key={c}>
-                  <Link href="/products" className="transition hover:text-brand">{c}</Link>
+                  <Link href="/products" className="transition hover:text-brand-light">{c}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact + app */}
+          {/* Contact */}
           <div>
             <h3 className="font-display text-sm font-bold uppercase tracking-wider text-white">Get in Touch</h3>
             <ul className="mt-4 space-y-3 text-sm">
               <li className="flex items-center gap-2.5">
-                <Mail size={16} className="text-brand" /> support@kisanmart.in
+                <Mail size={16} className="shrink-0 text-brand-light" /> support@kisanmart.in
               </li>
               <li className="flex items-center gap-2.5">
-                <Phone size={16} className="text-brand" /> +91 98765 43210
+                <Phone size={16} className="shrink-0 text-brand-light" /> +91 98765 43210
               </li>
               <li className="flex items-start gap-2.5">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-brand" /> Krishi Bhavan, New Delhi, India
+                <MapPin size={16} className="mt-0.5 shrink-0 text-brand-light" /> Krishi Bhavan, New Delhi, India
               </li>
             </ul>
-            <div className="mt-5 flex gap-2">
-              <span className="rounded-lg border border-white/10 px-3 py-2 text-xs font-medium text-slate-300">
-                📱 App — Coming Soon
-              </span>
-            </div>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
-          <p className="text-sm text-slate-400">
+        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
+          <p className="text-sm text-white/55">
             © {new Date().getFullYear()} KisanMart. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
-            <span className="mr-1 text-xs text-slate-500">We accept</span>
+            <span className="mr-1 text-xs text-white/45">We accept</span>
             <PayBadge>VISA</PayBadge>
             <PayBadge>
               <span className="text-red-500">●</span>

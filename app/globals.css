@@ -8,29 +8,31 @@
    ============================================================ */
 
 @theme {
-  /* ---- Brand ---- */
-  --color-brand: #16a34a; /* rich forest green (== green-600) */
-  --color-brand-dark: #14532d; /* deep green (== green-900) */
-  --color-brand-light: #bbf7d0; /* mint (== green-200) */
-  --color-accent: #f59e0b; /* warm amber / harvest gold */
-  --color-accent-dark: #d97706;
+  /* ---- Brand (earthy farm green) ---- */
+  --color-brand: #2e7d47; /* leaf green — buttons, links, icons */
+  --color-brand-dark: #14311f; /* deep forest — headings, footer, stats */
+  --color-brand-light: #dcebd7; /* soft sage tint */
+  --color-accent: #e0902a; /* harvest amber (used sparingly) */
+  --color-accent-dark: #b9701a;
 
   /* ---- Surfaces ---- */
-  --color-surface: #f0fdf4; /* barely-there green white */
+  --color-surface: #f7f5ec; /* warm cream page background */
+  --color-sage: #eef3e6; /* soft green section band */
   --color-card: #ffffff;
-  --color-ink: #0f172a; /* near-black (text, footer, admin) */
+  --color-ink: #16281d; /* very dark green — headings */
 
   /* ---- Text ---- */
-  --color-body: #475569; /* slate secondary text */
-  --color-muted: #94a3b8;
-  --color-line: #e2e8f0; /* border */
+  --color-body: #55645a; /* muted green-gray body text */
+  --color-muted: #8a988d;
+  --color-line: #e6e6da; /* warm border */
 
   /* ---- Status ---- */
   --color-success: #22c55e;
   --color-danger: #ef4444;
 
   /* ---- Fonts ---- */
-  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-script: var(--font-caveat), "Segoe Script", "Brush Script MT", cursive;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, Arial, sans-serif;
 
@@ -61,8 +63,15 @@ h4,
 h5 {
   font-family: var(--font-display);
   color: var(--color-ink);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   line-height: 1.15;
+}
+
+/* Handwritten script accent (e.g. "Farm Fresh" over hero headings) */
+.font-script {
+  font-family: var(--font-script);
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 html {
@@ -70,8 +79,8 @@ html {
 }
 
 ::selection {
-  background: #bbf7d0;
-  color: #14532d;
+  background: #cfe3c6;
+  color: #14311f;
 }
 
 /* ------------------------------------------------------------
@@ -80,17 +89,17 @@ html {
 
 /* Eyebrow label used above section headings */
 .eyebrow {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-brand);
 }
 
 /* Subtle green dot pattern */
 .bg-dots {
-  background-image: radial-gradient(#bbf7d0 1.2px, transparent 1.2px);
+  background-image: radial-gradient(#cfe0c4 1.2px, transparent 1.2px);
   background-size: 22px 22px;
 }
 

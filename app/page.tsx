@@ -1,5 +1,14 @@
 import Link from 'next/link'
-import { Leaf, Truck, Wallet, ShieldCheck, ArrowRight } from 'lucide-react'
+import {
+  Leaf,
+  Truck,
+  Wallet,
+  ShieldCheck,
+  RotateCcw,
+  Headphones,
+  Sprout,
+  ArrowRight,
+} from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import ProductCard from '@/components/product-card'
 import CategoryCard from '@/components/category-card'
@@ -10,27 +19,31 @@ import Reveal from '@/components/ui/reveal'
 import { buttonClasses } from '@/components/ui/button'
 import type { Product, Category } from '@/lib/types'
 
-const CATEGORY_ICONS: Record<string, string> = {
-  seeds: '🌱',
-  fertilizers: '🌿',
-  pesticides: '🛡️',
-  tools: '🔧',
-  irrigation: '💧',
-}
-
 const DEFAULT_CATEGORIES = [
   { slug: 'seeds', name: 'Seeds' },
   { slug: 'fertilizers', name: 'Fertilizers' },
   { slug: 'pesticides', name: 'Pesticides' },
   { slug: 'tools', name: 'Tools' },
+  { slug: 'irrigation', name: 'Irrigation' },
 ]
 
-const WHY_US = [
-  { icon: Leaf, title: 'Quality Tested', desc: 'Every product certified for reliable results.' },
-  { icon: Truck, title: 'Fast Delivery', desc: 'Doorstep delivery across 50+ districts.' },
-  { icon: Wallet, title: 'Best Prices', desc: 'Direct-from-manufacturer savings.' },
-  { icon: ShieldCheck, title: 'Secure Payments', desc: 'Razorpay-protected checkout.' },
+// Thin trust band under the hero.
+const STRIP = [
+  { icon: ShieldCheck, title: '100% Genuine', sub: 'Certified products' },
+  { icon: Truck, title: 'Free Delivery', sub: 'On orders ₹999+' },
+  { icon: RotateCcw, title: 'Easy Returns', sub: '7-day window' },
+  { icon: Wallet, title: 'Best Prices', sub: 'Direct sourcing' },
+  { icon: Headphones, title: 'Expert Support', sub: 'Kisan helpline' },
 ]
+
+const STORY = [
+  { icon: Sprout, title: 'Sourced Responsibly', desc: 'Directly from trusted, verified manufacturers.' },
+  { icon: ShieldCheck, title: 'Quality Guaranteed', desc: 'Every batch checked before it reaches your farm.' },
+  { icon: Truck, title: 'Delivered Fast', desc: 'To your doorstep across 50+ districts.' },
+]
+
+const STORY_IMG =
+  'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=900&h=1000&fit=crop'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -41,7 +54,7 @@ export default async function Home() {
       .select('*, categories(name)')
       .eq('is_active', true)
       .order('created_at', { ascending: false })
-      .limit(8),
+      .limit(10),
     supabase.from('categories').select('*').order('name'),
     supabase.from('products').select('category_id').eq('is_active', true),
   ])
@@ -59,51 +72,60 @@ export default async function Home() {
           href: `/products?category=${c.id}`,
           slug: c.slug,
           name: c.name,
+          image: c.image_url,
           count: countByCat.get(c.id),
         }))
       : DEFAULT_CATEGORIES.map((c) => ({
           href: '/products',
           slug: c.slug,
           name: c.name,
+          image: null as string | null,
           count: undefined,
         }))
 
   return (
     <div className="flex flex-1 flex-col">
       <HeroSection />
-      <StatsBar />
+
+      {/* Trust strip */}
+      <section className="border-y border-line bg-card">
+        <div className="grid w-full grid-cols-2 gap-x-4 gap-y-6 px-4 py-8 sm:grid-cols-3 sm:px-6 lg:grid-cols-5 lg:px-10">
+          {STRIP.map((s) => (
+            <div key={s.title} className="flex items-center gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+                <s.icon size={20} />
+              </span>
+              <span>
+                <span className="block text-sm font-bold text-ink">{s.title}</span>
+                <span className="block text-xs text-muted">{s.sub}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Categories */}
       <section id="categories" className="w-full px-4 py-16 sm:px-6 sm:py-20 lg:px-10">
         <Reveal>
           <SectionHeader
             eyebrow="Shop by Category"
-            title="Everything your farm needs"
-            subtitle="From seeds to irrigation — sourced from trusted manufacturers."
+            title="Best of the Farm, Handpicked"
+            subtitle="From seeds to irrigation — everything your farm needs, from trusted makers."
+            align="center"
           />
         </Reveal>
 
-        <div className="no-scrollbar mt-10 -mx-4 flex gap-4 overflow-x-auto px-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {categoryCards.map((c, i) => (
-            <Reveal
-              key={c.slug + c.href}
-              delay={i * 0.06}
-              className="min-w-[220px] sm:min-w-0"
-            >
-              <CategoryCard
-                href={c.href}
-                icon={CATEGORY_ICONS[c.slug] ?? '🌾'}
-                label={c.name}
-                slug={c.slug}
-                count={c.count}
-              />
+            <Reveal key={c.slug + c.href} delay={i * 0.06}>
+              <CategoryCard href={c.href} image={c.image} label={c.name} count={c.count} />
             </Reveal>
           ))}
         </div>
       </section>
 
       {/* Featured products */}
-      <section className="bg-card py-16 sm:py-20">
+      <section className="bg-sage py-16 sm:py-20">
         <div className="w-full px-4 sm:px-6 lg:px-10">
           <Reveal className="mb-10 flex flex-wrap items-end justify-between gap-4">
             <SectionHeader
@@ -120,17 +142,17 @@ export default async function Home() {
           </Reveal>
 
           {products && products.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {(products as Product[]).map((p, i) => (
-                <Reveal key={p.id} delay={(i % 4) * 0.06}>
+                <Reveal key={p.id} delay={(i % 5) * 0.06}>
                   <ProductCard product={p} />
                 </Reveal>
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed border-line bg-surface p-12 text-center">
+            <div className="rounded-2xl border border-dashed border-line bg-card p-12 text-center">
               <p className="text-body">
-                No products yet. Run <code className="rounded bg-brand/10 px-1.5 py-0.5 text-brand">supabase/seed.sql</code>.
+                No products yet. Run <code className="rounded bg-brand/10 px-1.5 py-0.5 text-brand">supabase/products.sql</code>.
               </p>
               <Link href="/products" className={`${buttonClasses('primary', 'md')} mt-4`}>
                 Go to Products
@@ -140,52 +162,88 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Why choose us */}
-      <section className="w-full px-4 py-16 sm:px-6 sm:py-20 lg:px-10">
-        <Reveal>
-          <SectionHeader
-            eyebrow="Why KisanMart"
-            title="Trusted by farmers"
-            subtitle="Thousands of farmers rely on us every season."
-            align="center"
-          />
-        </Reveal>
-        <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-          {WHY_US.map((w, i) => (
-            <Reveal key={w.title} delay={i * 0.06}>
-              <div className="h-full rounded-2xl border border-line bg-card p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-soft">
-                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/10 text-brand">
-                  <w.icon size={24} />
-                </span>
-                <h3 className="mt-4 font-display text-base font-bold text-ink">{w.title}</h3>
-                <p className="mt-1 text-sm text-body">{w.desc}</p>
-              </div>
-            </Reveal>
-          ))}
+      {/* Our Story */}
+      <section className="w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-10">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <Reveal className="relative">
+            <div className="overflow-hidden rounded-[2rem] border-4 border-white shadow-[0_40px_90px_-30px_rgba(20,49,31,0.45)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={STORY_IMG} alt="Golden harvest field" className="aspect-[4/3.4] w-full object-cover" />
+            </div>
+            <div className="absolute -bottom-5 -right-3 hidden items-center gap-3 rounded-2xl bg-brand px-5 py-4 text-white shadow-xl sm:flex lg:-right-5">
+              <span className="font-display text-3xl font-extrabold leading-none">15+</span>
+              <span className="text-xs font-medium leading-tight text-white/85">Years serving<br />Indian farmers</span>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <p className="flex items-center gap-2">
+              <Leaf size={20} className="text-brand" />
+              <span className="font-script text-3xl text-brand">Our Promise</span>
+            </p>
+            <h2 className="mt-3 font-display text-3xl font-extrabold leading-tight text-brand-dark sm:text-[2.6rem]">
+              From our farm family to yours
+            </h2>
+            <p className="mt-4 max-w-xl text-body">
+              KisanMart exists to put honest, quality-tested farm inputs within every
+              farmer&apos;s reach — at fair prices, with no fakes and no middlemen. When
+              your crop thrives, we&apos;ve done our job.
+            </p>
+
+            <div className="mt-8 space-y-5">
+              {STORY.map((s) => (
+                <div key={s.title} className="flex gap-4">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+                    <s.icon size={20} />
+                  </span>
+                  <div>
+                    <h3 className="font-display text-base font-bold text-ink">{s.title}</h3>
+                    <p className="text-sm text-body">{s.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Link href="/products" className={`${buttonClasses('primary', 'lg')} mt-9`}>
+              Start Shopping <ArrowRight size={18} />
+            </Link>
+          </Reveal>
         </div>
       </section>
 
-      {/* CTA band */}
-      <section className="bg-card">
-        <div className="w-full px-4 pb-20 sm:px-6 lg:px-10">
-          <Reveal className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand to-brand-dark px-6 py-12 text-center shadow-[0_30px_80px_rgba(20,83,45,0.3)] sm:px-12 sm:py-16">
-            <div className="pointer-events-none absolute inset-0 bg-dots opacity-10" />
-            <div className="relative">
-              <h2 className="mx-auto max-w-2xl text-3xl font-extrabold text-white sm:text-4xl">
-                Ready to grow a better harvest?
-              </h2>
-              <p className="mx-auto mt-3 max-w-lg text-brand-light">
-                Browse 500+ quality-tested products at the best prices in India.
+      {/* Stats band */}
+      <StatsBar />
+
+      {/* Newsletter */}
+      <section className="w-full px-4 py-16 sm:px-6 sm:py-20 lg:px-10">
+        <Reveal className="relative overflow-hidden rounded-[2rem] bg-brand-dark px-6 py-14 shadow-[0_30px_80px_-30px_rgba(20,49,31,0.7)] sm:px-14">
+          <div className="pointer-events-none absolute inset-0 bg-dots opacity-10" />
+          <div className="relative grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <p className="flex items-center gap-2 text-brand-light">
+                <Leaf size={18} /> <span className="font-script text-2xl">Stay in the loop</span>
               </p>
-              <Link
-                href="/products"
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-base font-semibold text-brand-dark transition hover:scale-[1.02] active:scale-[0.97]"
-              >
-                Start Shopping <ArrowRight size={18} />
-              </Link>
+              <h2 className="mt-2 font-display text-3xl font-extrabold text-white sm:text-4xl">
+                Get 10% off your first order
+              </h2>
+              <p className="mt-3 max-w-lg text-sm text-white/70">
+                Subscribe for seasonal crop tips, new arrivals and exclusive farmer-only deals.
+              </p>
             </div>
-          </Reveal>
-        </div>
+            <form className="flex w-full flex-col gap-3 sm:flex-row" action="/products">
+              <input
+                type="email"
+                required
+                placeholder="Enter your email address"
+                aria-label="Email address"
+                className="h-12 flex-1 rounded-full border border-white/15 bg-white/10 px-5 text-sm text-white placeholder:text-white/50 outline-none transition focus:border-brand-light focus:bg-white/15"
+              />
+              <button type="submit" className={buttonClasses('accent', 'lg')}>
+                Subscribe <ArrowRight size={17} />
+              </button>
+            </form>
+          </div>
+        </Reveal>
       </section>
     </div>
   )

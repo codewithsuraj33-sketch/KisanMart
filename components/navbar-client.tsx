@@ -14,6 +14,8 @@ import {
   LogOut,
   Package,
   Settings,
+  Truck,
+  ShieldCheck,
 } from 'lucide-react'
 import { useCart } from './cart-provider'
 import { useWishlist } from './wishlist-provider'
@@ -59,22 +61,43 @@ export default function NavbarClient({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   return (
     <>
+      {/* Announcement bar */}
+      <div className="bg-brand-dark text-[13px] text-white/90">
+        <div className="flex w-full items-center justify-between gap-4 px-4 py-2 sm:px-6 lg:px-10">
+          <span className="flex items-center gap-2 font-medium">
+            <Truck size={15} className="text-brand-light" />
+            Free delivery on orders above ₹999
+          </span>
+          <span className="hidden items-center gap-4 font-medium sm:flex">
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck size={15} className="text-brand-light" /> 100% Genuine Products
+            </span>
+            <span className="text-white/25">|</span>
+            <span>Trusted by 10,000+ Farmers</span>
+          </span>
+        </div>
+      </div>
+
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`sticky top-0 z-50 border-b transition-all duration-300 ${
           scrolled
-            ? 'border-b border-line bg-white/85 shadow-[0_4px_24px_rgba(15,23,42,0.06)] backdrop-blur-xl'
-            : 'border-b border-transparent bg-transparent'
+            ? 'border-line bg-surface/90 shadow-[0_4px_24px_rgba(20,49,31,0.08)] backdrop-blur-xl'
+            : 'border-line/60 bg-surface/80 backdrop-blur-md'
         }`}
       >
-        <nav className="flex h-[68px] w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
+        <nav className="flex h-[74px] w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 font-display text-xl font-extrabold tracking-tight">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-white shadow-sm">
+          <Link href="/" className="flex items-center gap-2.5">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-white shadow-sm">
               <Leaf size={20} />
             </span>
-            <span>
-              <span className="text-brand">Kisan</span>
-              <span className="text-accent">Mart</span>
+            <span className="leading-none">
+              <span className="block font-display text-[22px] font-extrabold tracking-tight">
+                <span className="text-ink">Kisan</span><span className="text-brand">Mart</span>
+              </span>
+              <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.15em] text-muted">
+                Grow · Nourish · Harvest
+              </span>
             </span>
           </Link>
 

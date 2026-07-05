@@ -9,9 +9,9 @@ const BASE =
   'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-200 will-change-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 hover:scale-[1.02] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100'
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  // Solid green → warms to amber on hover (harvest feel)
+  // Solid leaf green → deepens to forest green on hover
   primary:
-    'bg-brand text-white shadow-sm hover:bg-accent focus-visible:ring-brand',
+    'bg-brand text-white shadow-sm hover:bg-brand-dark focus-visible:ring-brand',
   // Solid amber
   accent:
     'bg-accent text-white shadow-sm hover:bg-accent-dark focus-visible:ring-accent',
