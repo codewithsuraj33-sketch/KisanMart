@@ -26,6 +26,20 @@ export async function proxy(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   const { pathname } = request.nextUrl
 
+  // Already-authenticated admin hitting the login page → send to dashboard
+  // (so the admin nav never appears over the login form).
+  if (pathname === '/admin/login' && user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.is_admin) {
+      return NextResponse.redirect(new URL('/admin/dashboard', request.url))
+    }
+  }
+
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
     if (!user) return NextResponse.redirect(new URL('/admin/login', request.url))
 
