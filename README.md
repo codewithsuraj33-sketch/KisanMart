@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KisanMart
 
-## Getting Started
+Next.js + Supabase e-commerce storefront for Indian farm inputs. The app includes catalog/search, cart, wishlist, compare, Razorpay and COD checkout, coupons, multiple addresses, shipment tracking, invoice PDFs, returns, rewards/referrals, bulk quotations, crop advisory, bilingual navigation, notifications, admin analytics and inventory alerts.
 
-First, run the development server:
+## Local setup
+
+1. Install dependencies with `npm install`.
+2. Copy `.env.example` to `.env.local` and add the project credentials.
+3. In Supabase SQL Editor, run these files in order:
+   - `supabase/schema.sql`
+   - `supabase/products.sql` (seed catalog, optional)
+   - `supabase/commerce-features.sql`
+   - `supabase/order-functions.sql`
+   - `supabase/realtime-setup.sql` (live admin refresh, optional)
+4. Start with `npm run dev`.
+
+`commerce-features.sql` is idempotent and contains all new tables, policies and atomic inventory/reward functions. Run it again when pulling feature updates.
+
+## Payments and notifications
+
+- Razorpay needs `NEXT_PUBLIC_RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET`.
+- COD works without a payment provider and is controlled per pincode in `serviceable_pincodes`.
+- Every order event creates an in-app notification.
+- To send the same events through email/SMS, set `NOTIFICATION_WEBHOOK_URL`. The endpoint receives a JSON payload with title, message, email, phone, type and link. `NOTIFICATION_WEBHOOK_SECRET` adds a bearer token, so an n8n/Make/Resend/MSG91/Twilio adapter can be connected without changing checkout code.
+
+## Quality checks
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run lint
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The build requires network access to the configured Supabase project when server-rendered pages fetch live catalog data.
