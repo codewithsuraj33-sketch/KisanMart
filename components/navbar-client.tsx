@@ -16,19 +16,18 @@ import {
   Settings,
   Truck,
   ShieldCheck,
+  Bell,
+  Languages,
+  MapPin,
+  Gift,
+  RotateCcw,
 } from 'lucide-react'
 import { useCart } from './cart-provider'
 import { useWishlist } from './wishlist-provider'
 import { logout } from '@/app/auth/actions'
 import { buttonClasses } from './ui/button'
 import SearchOverlay from './search-overlay'
-
-const NAV_LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/products', label: 'Products' },
-  { href: '/#categories', label: 'Categories' },
-  { href: '/#about', label: 'About' },
-]
+import { LOCALE_LABELS, useLanguage } from './language-provider'
 
 function CountBadge({ count, tone }: { count: number; tone: 'brand' | 'accent' }) {
   if (count <= 0) return null
@@ -43,7 +42,14 @@ function CountBadge({ count, tone }: { count: number; tone: 'brand' | 'accent' }
   )
 }
 
-export default function NavbarClient({ isLoggedIn }: { isLoggedIn: boolean }) {
+export default function NavbarClient({ isLoggedIn, unreadNotifications = 0 }: { isLoggedIn: boolean; unreadNotifications?: number }) {
+  const { locale, toggle, t } = useLanguage()
+  const translatedLinks = [
+    { href: '/', label: t('home') },
+    { href: '/products', label: t('products') },
+    { href: '/#categories', label: t('categories') },
+    { href: '/#about', label: t('about') },
+  ]
   const { totalItems } = useCart()
   const { savedIds } = useWishlist()
   const [scrolled, setScrolled] = useState(false)
@@ -66,14 +72,14 @@ export default function NavbarClient({ isLoggedIn }: { isLoggedIn: boolean }) {
         <div className="flex w-full items-center justify-between gap-4 px-4 py-2 sm:px-6 lg:px-10">
           <span className="flex items-center gap-2 font-medium">
             <Truck size={15} className="text-brand-light" />
-            Free delivery on orders above ₹999
+            {t('freeDelivery')}
           </span>
           <span className="hidden items-center gap-4 font-medium sm:flex">
             <span className="flex items-center gap-1.5">
-              <ShieldCheck size={15} className="text-brand-light" /> 100% Genuine Products
+              <ShieldCheck size={15} className="text-brand-light" /> {t('genuine')}
             </span>
             <span className="text-white/25">|</span>
-            <span>Trusted by 10,000+ Farmers</span>
+            <span>{t('trusted')}</span>
           </span>
         </div>
       </div>
@@ -103,7 +109,7 @@ export default function NavbarClient({ isLoggedIn }: { isLoggedIn: boolean }) {
 
           {/* Center links with animated underline */}
           <div className="hidden items-center gap-8 md:flex">
-            {NAV_LINKS.map((l) => (
+            {translatedLinks.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
@@ -117,6 +123,7 @@ export default function NavbarClient({ isLoggedIn }: { isLoggedIn: boolean }) {
 
           {/* Right actions */}
           <div className="flex items-center gap-1 sm:gap-2">
+            <button type="button" onClick={toggle} aria-label="Change language" title={`${t('language')}: ${LOCALE_LABELS[locale]}`} className="flex h-10 items-center gap-1 rounded-full px-2 text-xs font-bold text-ink/70 transition hover:bg-brand/10 hover:text-brand"><Languages size={18} /><span className="hidden sm:inline">{locale === 'en' ? 'EN' : LOCALE_LABELS[locale]}</span></button>
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
@@ -143,6 +150,7 @@ export default function NavbarClient({ isLoggedIn }: { isLoggedIn: boolean }) {
               <ShoppingCart size={20} />
               <CountBadge count={totalItems} tone="brand" />
             </Link>
+            {isLoggedIn && <Link href="/notifications" aria-label="Notifications" className="relative flex h-10 w-10 items-center justify-center rounded-full text-ink/70 transition hover:bg-brand/10 hover:text-brand"><Bell size={20} /><CountBadge count={unreadNotifications} tone="accent" /></Link>}
 
             {/* Profile / Login (desktop) */}
             <div className="ml-1 hidden md:block">
@@ -152,14 +160,18 @@ export default function NavbarClient({ isLoggedIn }: { isLoggedIn: boolean }) {
                     type="button"
                     className="flex items-center gap-1.5 rounded-full border border-line px-3.5 py-2 text-sm font-semibold text-ink transition hover:border-brand/40 hover:text-brand"
                   >
-                    <User size={16} /> Account
+                    <User size={16} /> {t('account')}
                   </button>
                   <div className="invisible absolute right-0 top-full z-50 w-48 pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
                     <div className="overflow-hidden rounded-xl border border-line bg-card py-1.5 shadow-[0_12px_40px_rgba(15,23,42,0.12)]">
                       {[
-                        { href: '/orders', icon: Package, label: 'My Orders' },
-                        { href: '/wishlist', icon: Heart, label: 'Wishlist' },
-                        { href: '/settings', icon: Settings, label: 'Settings' },
+                        { href: '/orders', icon: Package, label: t('orders') },
+                        { href: '/wishlist', icon: Heart, label: t('wishlist') },
+                        { href: '/addresses', icon: MapPin, label: t('addresses') },
+                        { href: '/rewards', icon: Gift, label: t('rewards') },
+                        { href: '/returns', icon: RotateCcw, label: t('returns') },
+                        { href: '/notifications', icon: Bell, label: t('notifications') },
+                        { href: '/settings', icon: Settings, label: t('settings') },
                       ].map((m) => (
                         <Link
                           key={m.href}
@@ -174,7 +186,7 @@ export default function NavbarClient({ isLoggedIn }: { isLoggedIn: boolean }) {
                           type="submit"
                           className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-body transition hover:bg-surface hover:text-danger"
                         >
-                          <LogOut size={16} /> Logout
+                          <LogOut size={16} /> {t('logout')}
                         </button>
                       </form>
                     </div>
@@ -236,7 +248,7 @@ export default function NavbarClient({ isLoggedIn }: { isLoggedIn: boolean }) {
               </div>
 
               <div className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">
-                {NAV_LINKS.map((l) => (
+                {translatedLinks.map((l) => (
                   <Link
                     key={l.href}
                     href={l.href}
@@ -251,9 +263,13 @@ export default function NavbarClient({ isLoggedIn }: { isLoggedIn: boolean }) {
                   {isLoggedIn ? (
                     <>
                       {[
-                        { href: '/orders', icon: Package, label: 'My Orders' },
-                        { href: '/wishlist', icon: Heart, label: 'Wishlist' },
-                        { href: '/settings', icon: Settings, label: 'Settings' },
+                        { href: '/orders', icon: Package, label: t('orders') },
+                        { href: '/wishlist', icon: Heart, label: t('wishlist') },
+                        { href: '/addresses', icon: MapPin, label: t('addresses') },
+                        { href: '/rewards', icon: Gift, label: t('rewards') },
+                        { href: '/returns', icon: RotateCcw, label: t('returns') },
+                        { href: '/notifications', icon: Bell, label: t('notifications') },
+                        { href: '/settings', icon: Settings, label: t('settings') },
                       ].map((m) => (
                         <Link
                           key={m.href}
@@ -269,7 +285,7 @@ export default function NavbarClient({ isLoggedIn }: { isLoggedIn: boolean }) {
                           type="submit"
                           className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-body transition hover:bg-surface hover:text-danger"
                         >
-                          <LogOut size={17} /> Logout
+                          <LogOut size={17} /> {t('logout')}
                         </button>
                       </form>
                     </>

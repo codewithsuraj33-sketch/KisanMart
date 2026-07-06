@@ -18,7 +18,7 @@ export type AdminOrderRow = {
 }
 
 type SortKey = 'order' | 'customer' | 'total' | 'payment' | 'status'
-const STATUSES = ['pending', 'paid', 'shipped', 'delivered', 'cancelled']
+const STATUSES = ['pending', 'confirmed', 'paid', 'packed', 'shipped', 'delivered', 'cancelled']
 
 export default function AdminOrdersTable({ orders }: { orders: AdminOrderRow[] }) {
   const [search, setSearch] = useState('')
@@ -63,7 +63,7 @@ export default function AdminOrdersTable({ orders }: { orders: AdminOrderRow[] }
         <div className="no-scrollbar flex items-center gap-2 overflow-x-auto">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand"><SlidersHorizontal size={17} /></span>
           <label className="relative min-w-[260px] flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" size={15} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search ID, customer, phone or city" className="h-10 w-full rounded-xl border border-slate-200 pl-9 pr-3 text-sm text-ink outline-none focus:border-brand" /></label>
-          <select value={payment} onChange={(event) => setPayment(event.target.value)} className={selectClass}><option value="all">All payments</option><option value="pending">Payment pending</option><option value="paid">Paid</option><option value="failed">Failed</option></select>
+          <select value={payment} onChange={(event) => setPayment(event.target.value)} className={selectClass}><option value="all">All payments</option><option value="pending">Payment pending</option><option value="cod_pending">COD pending</option><option value="paid">Paid</option><option value="failed">Failed</option></select>
           <select value={status} onChange={(event) => setStatus(event.target.value)} className={selectClass}><option value="all">All fulfilment</option>{STATUSES.map((item) => <option key={item} value={item}>{item}</option>)}</select>
           {hasFilters && <button type="button" onClick={() => { setSearch(''); setPayment('all'); setStatus('all') }} className="flex h-10 shrink-0 items-center gap-1 rounded-xl px-3 text-xs font-bold text-danger hover:bg-danger/5"><X size={14} /> Clear</button>}
         </div>

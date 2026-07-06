@@ -11,11 +11,24 @@ export default async function SettingsPage() {
 
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name, phone, created_at')
-    .eq('id', user.id)
-    .single()
+  const [{ data: profile }, { data: preferences }, { data: farmProfile }, { data: deletionRequest }] = await Promise.all([
+    supabase.from('profiles').select('full_name, phone, created_at').eq('id', user.id).single(),
+    supabase
+      .from('user_preferences')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle(),
+    supabase
+      .from('farm_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle(),
+    supabase
+      .from('account_deletion_requests')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle(),
+  ])
 
   return (
     <div className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:py-10">
@@ -46,6 +59,9 @@ export default async function SettingsPage() {
         email={user.email ?? ''}
         fullName={profile?.full_name ?? String(user.user_metadata.full_name ?? '')}
         phone={profile?.phone ?? String(user.user_metadata.phone ?? '')}
+        preferences={preferences}
+        farmProfile={farmProfile}
+        deletionRequest={deletionRequest}
       />
     </div>
   )

@@ -10,7 +10,7 @@ export default function TopProgress() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    setLoading(true)
+    queueMicrotask(() => setLoading(true))
     const done = setTimeout(() => setLoading(false), 600)
     return () => clearTimeout(done)
   }, [pathname])

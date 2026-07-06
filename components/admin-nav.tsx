@@ -2,13 +2,16 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ExternalLink, Home, Leaf, LogOut, Package, ShoppingBag, Users } from 'lucide-react'
+import { ExternalLink, Home, Leaf, LogOut, MessageSquareQuote, Package, RotateCcw, ShoppingBag, TicketPercent, Users } from 'lucide-react'
 import { logout } from '@/app/auth/actions'
 
 const LINKS = [
   { href: '/admin/dashboard', label: 'Overview', icon: Home },
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+  { href: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
+  { href: '/admin/returns', label: 'Returns', icon: RotateCcw },
+  { href: '/admin/quotes', label: 'Bulk Quotes', icon: MessageSquareQuote },
   { href: '/admin/users', label: 'Customers', icon: Users },
 ]
 

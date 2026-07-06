@@ -9,6 +9,8 @@ import { WishlistProvider } from "@/components/wishlist-provider";
 import { CompareProvider } from "@/components/compare-provider";
 import { ToastProvider } from "@/components/ui/toast";
 import TopProgress from "@/components/ui/top-progress";
+import { LanguageProvider } from "@/components/language-provider";
+import LiveSupport from "@/components/live-support";
 
 // Display font — elegant serif for headings, hero, logo (organic/farm feel)
 const playfair = Playfair_Display({
@@ -50,6 +52,7 @@ export default function RootLayout({
       className={`${playfair.variable} ${inter.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-surface font-sans text-body">
+        <LanguageProvider>
         <ToastProvider>
           <CartProvider>
             <WishlistProvider>
@@ -62,10 +65,12 @@ export default function RootLayout({
                 <NavbarGate>
                   <Footer />
                 </NavbarGate>
+                <LiveSupport />
               </CompareProvider>
             </WishlistProvider>
           </CartProvider>
         </ToastProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

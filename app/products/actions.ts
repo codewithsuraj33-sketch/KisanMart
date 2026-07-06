@@ -48,6 +48,8 @@ export async function requestStockAlert(
   _previousState: ProductActionState,
   _formData: FormData
 ): Promise<ProductActionState> {
+  void _previousState
+  void _formData
   const supabase = await createClient()
   const {
     data: { user },
@@ -60,4 +62,83 @@ export async function requestStockAlert(
 
   if (error) return { error: 'Alert save nahi hua.' }
   return { success: 'Product wapas stock mein aate hi alert milega.' }
+}
+
+export async function createSubscription(
+  productId: string,
+  _previousState: ProductActionState,
+  formData: FormData
+): Promise<ProductActionState> {
+  const variantIdRaw = String(formData.get('variant_id') || '').trim()
+  const addressId = String(formData.get('address_id') || '').trim()
+  const frequencyDays = Number(formData.get('frequency_days') || 30)
+  const quantity = Number(formData.get('quantity') || 1)
+  const discountPercent = Number(formData.get('discount_percent') || 5)
+
+  if (!addressId) return { error: 'Delivery address select karein.' }
+  if (![15, 30, 45, 60, 90].includes(frequencyDays)) return { error: 'Frequency valid nahi hai.' }
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 20) return { error: 'Quantity 1 se 20 ke beech honi chahiye.' }
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { error: 'Subscribe karne ke liye login karein.' }
+
+  const [{ data: address }, { data: product }, { data: variant }] = await Promise.all([
+    supabase.from('addresses').select('id').eq('id', addressId).eq('user_id', user.id).maybeSingle(),
+    supabase.from('products').select('id, stock, is_active').eq('id', productId).maybeSingle(),
+    variantIdRaw
+      ? supabase
+          .from('product_variants')
+          .select('id, stock, is_active')
+          .eq('id', variantIdRaw)
+          .eq('product_id', productId)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+  ])
+
+  if (!address) return { error: 'Selected address aapki nahi hai.' }
+  if (!product?.is_active) return { error: 'Product subscription ke liye available nahi hai.' }
+  if (variantIdRaw && !variant?.is_active) return { error: 'Selected variant active nahi hai.' }
+
+  const nextOrderDate = new Date()
+  nextOrderDate.setDate(nextOrderDate.getDate() + frequencyDays)
+
+  const payload = {
+    user_id: user.id,
+    product_id: productId,
+    variant_id: variantIdRaw || null,
+    address_id: addressId,
+    quantity,
+    frequency_days: frequencyDays,
+    discount_percent: discountPercent,
+    status: 'active',
+    next_order_date: nextOrderDate.toISOString().slice(0, 10),
+    last_error: null,
+  }
+
+  let activeSubscriptionQuery = supabase
+    .from('product_subscriptions')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('product_id', productId)
+    .in('status', ['active', 'paused'])
+
+  activeSubscriptionQuery = variantIdRaw
+    ? activeSubscriptionQuery.eq('variant_id', variantIdRaw)
+    : activeSubscriptionQuery.is('variant_id', null)
+
+  const activeSubscription = await activeSubscriptionQuery.maybeSingle()
+
+  const operation = activeSubscription.data?.id
+    ? supabase.from('product_subscriptions').update(payload).eq('id', activeSubscription.data.id)
+    : supabase.from('product_subscriptions').insert(payload)
+
+  const { error } = await operation
+  if (error) return { error: 'Subscription save nahi hui.' }
+
+  revalidatePath(`/products/${productId}`)
+  revalidatePath('/settings')
+  return { success: 'Subscribe & save enable ho gaya.' }
 }

@@ -13,6 +13,7 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
   const phone = String(formData.get('phone') || '').trim()
   const email = String(formData.get('email') || '').trim()
   const password = String(formData.get('password') || '')
+  const referralCode = String(formData.get('referral_code') || '').trim().toUpperCase()
 
   // Basic validation (server-side — hamesha yahan check karo)
   if (!fullName || !email || !password) {
@@ -27,7 +28,7 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
     email,
     password,
     // Ye data trigger (handle_new_user) profiles table mein daal dega
-    options: { data: { full_name: fullName, phone } },
+    options: { data: { full_name: fullName, phone, referral_code: referralCode || undefined } },
   })
 
   if (error) return { error: error.message }

@@ -8,6 +8,9 @@ export default async function Navbar() {
   const {
     data: { user },
   } = await supabase.auth.getUser()
+  const { count } = user
+    ? await supabase.from('notifications').select('*', { count: 'exact', head: true }).is('read_at', null)
+    : { count: 0 }
 
-  return <NavbarClient isLoggedIn={!!user} />
+  return <NavbarClient isLoggedIn={!!user} unreadNotifications={count ?? 0} />
 }

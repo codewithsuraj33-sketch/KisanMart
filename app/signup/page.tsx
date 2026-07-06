@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, LockKeyhole, Mail, Phone, UserRound } from 'lucide-react'
+import { ArrowRight, Gift, LockKeyhole, Mail, Phone, UserRound } from 'lucide-react'
 import { signup, type AuthState } from '@/app/auth/actions'
 import AuthShell from '@/components/auth-shell'
 import { buttonClasses } from '@/components/ui/button'
@@ -30,6 +30,7 @@ export default function SignupPage() {
         <Field icon={Phone} label="Phone (optional)" name="phone" type="tel" autoComplete="tel" />
         <Field icon={Mail} label="Email address" name="email" type="email" required autoComplete="email" />
         <Field icon={LockKeyhole} label="Password · minimum 8 characters" name="password" type="password" required minLength={8} autoComplete="new-password" />
+        <Field icon={Gift} label="Referral code (optional)" name="referral_code" type="text" autoComplete="off" />
 
         {state.error && <p className="rounded-xl border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">{state.error}</p>}
         {state.message && <p className="rounded-xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm text-brand-dark">{state.message}</p>}

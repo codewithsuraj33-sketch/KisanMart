@@ -9,9 +9,11 @@ import DeliveryChecker from '@/components/delivery-checker'
 import WishlistButton from '@/components/wishlist-button'
 import CompareButton from '@/components/compare-button'
 import StickyProductBar from '@/components/sticky-product-bar'
+import SubscribeSaveForm from '@/components/subscribe-save-form'
 import { RecentlyViewedTracker, RecentlyViewedProducts } from '@/components/recently-viewed'
 import RealtimeRefresh from '@/components/realtime-refresh'
 import type { Product, ProductVariant, ProductReview } from '@/lib/types'
+import ProductCard from '@/components/product-card'
 
 type Params = Promise<{ id: string }>
 const SHIPPING_INFO = [
@@ -31,8 +33,24 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
   ])
   if (!product) notFound()
   const p = product as Product
+  const { data: relatedRows } = p.category_id
+    ? await supabase.from('products').select('*, categories(name)').eq('category_id', p.category_id).eq('is_active', true).neq('id', p.id).limit(4)
+    : { data: [] }
+  const related = (relatedRows ?? []) as Product[]
   const variants = (variantRows as ProductVariant[] | null) ?? []
   const reviews = (reviewRows as ProductReview[] | null) ?? []
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const { data: addressRows } = user
+    ? await supabase
+        .from('addresses')
+        .select('id, label, full_name, address_line, city, state, pincode')
+        .eq('user_id', user.id)
+        .order('is_default', { ascending: false })
+        .order('created_at')
+    : { data: [] }
+  const addresses = addressRows ?? []
   const hasDiscount = p.mrp != null && p.mrp > p.price
   const discountPct = hasDiscount ? Math.round(((p.mrp! - p.price) / p.mrp!) * 100) : 0
   const average = Number(p.rating_avg ?? 0)
@@ -76,6 +94,15 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
             {p.description && <div className="mt-6 border-t border-line pt-5"><h2 className="text-sm font-bold text-ink">Product details</h2><p className="mt-2 text-sm leading-7 text-body">{p.description}</p></div>}
             <ProductActions product={p} variants={variants} />
+            <SubscribeSaveForm
+              productId={p.id}
+              productName={p.name}
+              basePrice={p.price}
+              canSubscribe={Boolean(user)}
+              addresses={addresses}
+              variants={variants}
+              defaultVariantId={variants.find((variant) => variant.is_default)?.id ?? variants[0]?.id ?? null}
+            />
             <DeliveryChecker />
             <div className="mt-6 grid grid-cols-2 gap-3">
               {SHIPPING_INFO.map((item) => <div key={item.title} className="flex items-center gap-3 rounded-xl border border-line bg-card p-3"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand"><item.icon size={17} /></span><div><p className="text-xs font-bold text-ink sm:text-sm">{item.title}</p><p className="text-[11px] text-muted sm:text-xs">{item.desc}</p></div></div>)}
@@ -84,6 +111,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
         </div>
 
         <ProductReviews productId={p.id} reviews={reviews} average={average} />
+        {related.length > 0 && <section className="mt-14 border-t border-line pt-10"><div className="flex items-end justify-between"><div><p className="text-xs font-bold uppercase tracking-wider text-brand">You may also like</p><h2 className="mt-2 font-display text-2xl font-extrabold text-ink">Related products</h2></div><Link href={`/products?category=${p.category_id}`} className="text-sm font-bold text-brand">View all →</Link></div><div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">{related.map((item) => <ProductCard key={item.id} product={item} />)}</div></section>}
       </div>
       <RecentlyViewedProducts />
       <StickyProductBar product={p} />

@@ -47,11 +47,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) setItems(JSON.parse(raw))
+      if (raw) queueMicrotask(() => setItems(JSON.parse(raw)))
     } catch {
       // corrupt data — ignore
     }
-    setLoaded(true)
+    queueMicrotask(() => setLoaded(true))
   }, [])
 
   // Jab bhi cart badle, localStorage mein save karo (pehli load ke baad)

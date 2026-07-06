@@ -93,6 +93,8 @@ export default function Footer() {
                 { href: '/#categories', label: 'Categories' },
                 { href: '/orders', label: 'My Orders' },
                 { href: '/wishlist', label: 'Wishlist' },
+                { href: '/advisory', label: 'Crop Advisory' },
+                { href: '/blog', label: 'Kisan Guides' },
               ].map((l) => (
                 <li key={l.label}>
                   <Link href={l.href} className="transition hover:text-brand-light">{l.label}</Link>
@@ -110,7 +112,9 @@ export default function Footer() {
                 { href: '/orders', label: 'Order Tracking' },
                 { href: '/wishlist', label: 'Wishlist' },
                 { href: '/cart', label: 'Shopping Cart' },
-                { href: '/#about', label: 'Returns & Refunds' },
+                { href: '/returns', label: 'Returns & Refunds' },
+                { href: '/bulk-orders', label: 'Bulk Orders' },
+                { href: '/help', label: 'Help & FAQ' },
               ].map((l) => (
                 <li key={l.label}>
                   <Link href={l.href} className="transition hover:text-brand-light">{l.label}</Link>

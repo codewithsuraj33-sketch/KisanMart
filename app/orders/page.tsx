@@ -2,9 +2,11 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ChevronRight, Package } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import BuyAgainButton from '@/components/buy-again-button'
 
 type OrderItemSummary = {
   id: string
+  product_id: string | null
   product_name: string
   price: number
   quantity: number
@@ -21,7 +23,9 @@ type OrderSummary = {
 
 const statusStyles: Record<string, string> = {
   pending: 'bg-amber-50 text-amber-700 ring-amber-200',
+  confirmed: 'bg-blue-50 text-blue-700 ring-blue-200',
   paid: 'bg-blue-50 text-blue-700 ring-blue-200',
+  packed: 'bg-indigo-50 text-indigo-700 ring-indigo-200',
   shipped: 'bg-violet-50 text-violet-700 ring-violet-200',
   delivered: 'bg-green-50 text-green-700 ring-green-200',
   cancelled: 'bg-red-50 text-red-700 ring-red-200',
@@ -45,7 +49,7 @@ export default async function OrdersPage() {
   // RLS: sirf apne orders (orders_select_own policy)
   const { data: orders } = await supabase
     .from('orders')
-    .select('id, created_at, status, payment_status, total_amount, order_items(id, product_name, price, quantity)')
+    .select('id, created_at, status, payment_status, total_amount, order_items(id, product_id, product_name, price, quantity)')
     .order('created_at', { ascending: false })
 
   const list = (orders ?? []) as OrderSummary[]
@@ -131,6 +135,7 @@ export default async function OrdersPage() {
                   {totalUnits} {totalUnits === 1 ? 'item' : 'items'} · Payment {order.payment_status}
                 </p>
                 <div className="flex items-center gap-3">
+                  <BuyAgainButton items={items} />
                   <p className="text-sm font-bold text-zinc-900">
                     Total: {money(Number(order.total_amount))}
                   </p>

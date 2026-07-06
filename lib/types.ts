@@ -53,3 +53,26 @@ export type ProductReview = {
   is_verified: boolean
   created_at: string
 }
+
+export type Address = {
+  id: string
+  user_id: string
+  label: string
+  full_name: string
+  phone: string
+  address_line: string
+  city: string
+  state: string
+  pincode: string
+  is_default: boolean
+  created_at: string
+}
+
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'paid'
+  | 'packed'
+  | 'shipped'
+  | 'delivered'
+  | 'cancelled'

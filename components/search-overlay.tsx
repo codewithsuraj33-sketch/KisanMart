@@ -3,10 +3,33 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Search, X, TrendingUp, Loader2 } from 'lucide-react'
+import { Loader2, Mic, Search, TrendingUp, X } from 'lucide-react'
 import ProductImage from './product-image'
+import { LOCALE_SPEECH, useLanguage } from './language-provider'
 
 type Suggestion = { id: string; name: string; price: number; image_url: string | null }
+
+type SpeechRecognitionLike = {
+  lang: string
+  continuous: boolean
+  interimResults: boolean
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null
+  onerror: ((event: unknown) => void) | null
+  onend: (() => void) | null
+  start: () => void
+  stop: () => void
+}
+
+type SpeechRecognitionEventLike = {
+  results: ArrayLike<{ 0: { transcript: string } }>
+}
+
+declare global {
+  interface Window {
+    webkitSpeechRecognition?: new () => SpeechRecognitionLike
+    SpeechRecognition?: new () => SpeechRecognitionLike
+  }
+}
 
 // Full-width search overlay that fetches live product suggestions.
 export default function SearchOverlay({
@@ -17,11 +40,14 @@ export default function SearchOverlay({
   onClose: () => void
 }) {
   const router = useRouter()
+  const { locale, t } = useLanguage()
   const inputRef = useRef<HTMLInputElement>(null)
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null)
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [popular, setPopular] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
+  const [listening, setListening] = useState(false)
 
   // Focus input + lock scroll while open; Esc to close.
   useEffect(() => {
@@ -68,6 +94,36 @@ export default function SearchOverlay({
     go(q ? `/products?q=${encodeURIComponent(q)}` : '/products')
   }
 
+  function startVoiceSearch() {
+    if (typeof window === 'undefined') return
+    const Recognition = window.SpeechRecognition ?? window.webkitSpeechRecognition
+    if (!Recognition) {
+      return
+    }
+
+    if (recognitionRef.current) {
+      recognitionRef.current.stop()
+      recognitionRef.current = null
+    }
+
+    const recognition = new Recognition()
+    recognition.lang = LOCALE_SPEECH[locale]
+    recognition.continuous = false
+    recognition.interimResults = true
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map((result) => result[0]?.transcript ?? '')
+        .join(' ')
+        .trim()
+      if (transcript) setQuery(transcript)
+    }
+    recognition.onerror = () => setListening(false)
+    recognition.onend = () => setListening(false)
+    recognitionRef.current = recognition
+    setListening(true)
+    recognition.start()
+  }
+
   return (
     <AnimatePresence>
       {open && (
@@ -94,10 +150,19 @@ export default function SearchOverlay({
                   ref={inputRef}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search seeds, fertilizers, tools…"
+                  placeholder={t('searchPlaceholder')}
                   className="w-full bg-transparent text-lg text-ink outline-none placeholder:text-muted"
                 />
                 {loading && <Loader2 size={18} className="animate-spin text-muted" />}
+                <button
+                  type="button"
+                  onClick={startVoiceSearch}
+                  aria-label={t('voiceSearch')}
+                  title={t('voiceSearch')}
+                  className={`flex h-8 w-8 items-center justify-center rounded-full transition ${listening ? 'bg-brand text-white' : 'text-muted hover:bg-surface hover:text-ink'}`}
+                >
+                  <Mic size={17} />
+                </button>
                 <button
                   type="button"
                   onClick={onClose}
